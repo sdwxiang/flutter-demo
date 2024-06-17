@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import './youtube_dl_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +17,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: BlocProvider(
+        create: (context) => YoutubeDLBloc(),
+        child: const MyHomePage()
+      ),
     );
   }
 }
@@ -32,24 +37,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+  final bloc = BlocProvider.of<YoutubeDLBloc>(context);
+
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'enter url',
-              ),
-            )
-          ],
+        child: BlocBuilder<YoutubeDLBloc, YoutubeDLState>(
+          builder:(context, state) {
+            if (state is YoutubeDLUrl) {
+              return Text('url: ${state.url}');
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'enter url',
+                    ),
+                  )
+                ],
+              );
+            }
+          },
+          bloc: bloc,
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          bloc.add(DownloadVideo(_controller.text));
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
@@ -60,9 +78,5 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  void _incrementCounter() {
-    print(_controller.text);
   }
 }
