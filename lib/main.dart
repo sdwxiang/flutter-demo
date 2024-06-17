@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import './youtube_dl_bloc.dart';
+import 'youtube_video_url_parser_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: BlocProvider(
-        create: (context) => YoutubeDLBloc(),
+        create: (context) => YoutubeVideoUrlParserBloc(),
         child: const MyHomePage()
       ),
     );
@@ -37,14 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-  final bloc = BlocProvider.of<YoutubeDLBloc>(context);
+  final bloc = BlocProvider.of<YoutubeVideoUrlParserBloc>(context);
 
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.all(20.0),
-        child: BlocBuilder<YoutubeDLBloc, YoutubeDLState>(
+        child: BlocBuilder<YoutubeVideoUrlParserBloc, YoutubeVideoUrlParserState> (
           builder:(context, state) {
-            if (state is YoutubeDLUrl) {
+            if (state is ParseCompleted) {
               return Text('url: ${state.url}');
             } else {
               return Column(
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          bloc.add(DownloadVideo(_controller.text));
+          bloc.add(StartParse(_controller.text));
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
