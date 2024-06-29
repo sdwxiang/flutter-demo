@@ -46,7 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
           builder:(context, state) {
             if (state is ParseCompleted) {
               return Text('url: ${state.url}');
-            } else {
+            } else if (state is ParseInProgress) {
+              return const Text('parsing ...');
+            } else if (state is ParseFailed) {
+              return const Text('failed ...');
+            } {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -54,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller: _controller,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'enter url',
+                      labelText: 'enter url 333',
                     ),
                   )
                 ],

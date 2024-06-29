@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "launch_chrome_with_profile",
+        "type": "shell",
+        "command": "start chrome --profile-directory=\"Profile\"",
+        "windows": {
+          "command": "start chrome --profile-directory=\"Profile\""
+        },
+        "linux": {
+          "command": "google-chrome --user-data-dir=\"/home/user/.config/google-chrome/Profile\""
+        },
+        "osx": {
+          "command": "open -na \"Google Chrome\" --args --user-data-dir=\"/Users/sdwxi/Library/Application Support/Google/Chrome/Profile\""
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+  

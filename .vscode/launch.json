@@ -6,8 +6,14 @@
     "configurations": [
         {
             "name": "flutter_application_1",
-            "request": "launch",
+            "request": "attach",
+            "deviceId": "19004",
             "type": "dart"
+            // "args": [
+            //   "-d",
+            //   "chrome"
+            // ],
+            // "preLaunchTask": "launch_chrome_with_profile"
         },
         {
             "name": "flutter_application_1 (profile mode)",

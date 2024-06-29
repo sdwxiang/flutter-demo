@@ -1,7 +1,10 @@
-import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart' as http;
 
 abstract class YoutubeVideoUrlParserEvent extends Equatable {
   const YoutubeVideoUrlParserEvent();
@@ -52,10 +55,22 @@ class ParseFailed extends YoutubeVideoUrlParserState {
 
 class YoutubeVideoUrlParserBloc extends Bloc<YoutubeVideoUrlParserEvent, YoutubeVideoUrlParserState> {
   YoutubeVideoUrlParserBloc() : super(const ParseInit()) {
-    on<StartParse>(_downloadVideo);
+    on<StartParse>(_parseVideoUrl);
   }
 
-  FutureOr<void> _downloadVideo(StartParse event, Emitter<YoutubeVideoUrlParserState> emit) {
-    emit(ParseCompleted(event.videoID));
+  void _parseVideoUrl(StartParse event, Emitter<YoutubeVideoUrlParserState> emit) async {
+    emit(const ParseInProgress());
+    try {
+      final id = event.videoID;
+      final response = await http.get(Uri.parse('/api/yt/$id'));
+      final text = response.body;
+      if (kDebugMode) {
+        print('response: $response');
+      }
+      emit(ParseCompleted('response body: $text'));
+    } catch (e) {
+      print('post url error: $e');
+      emit(const ParseFailed());
+    }
   }
 }
